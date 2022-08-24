@@ -29,20 +29,16 @@ public class KanbanServiceImpl implements KanbanService {
         }
         return kanbanVos;
     }
-
     @Override
     public KanbanVo getKanbanByName(String name) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        formLambdaQueryWrapper.eq(Form::getName,name);
+        formLambdaQueryWrapper.like(Form::getName,name);
         Form form = kanbanMapper.selectOne(formLambdaQueryWrapper);
-
         KanbanVo kanbanVo = new KanbanVo();
         if(form == null){
             return kanbanVo;
         }
-
             BeanUtils.copyProperties(form, kanbanVo);
-
         return kanbanVo;
     }
 }

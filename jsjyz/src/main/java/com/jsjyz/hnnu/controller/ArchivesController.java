@@ -17,13 +17,7 @@ public class ArchivesController {
     @Autowired
     private ArchivesService archivesService;
     @PostMapping("/archives")
-    public List<ArchivesVo> getArchives(@RequestBody Pagination pagination)  {
-
-        Integer year = pagination.getYear();
-        return archivesService.getArchives(year);
-    }
-    @GetMapping("/getyear")
-    public List<Integer> getYear(){
-        return archivesService.getYear();
+    public List<ArchivesVo> getArchives()  {
+        return archivesService.getArchives();
     }
 }

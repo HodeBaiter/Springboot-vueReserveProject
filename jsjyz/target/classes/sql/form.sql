@@ -12,6 +12,8 @@ create table form
     college      varchar(30)  null,
     reserve_time bigint       null,
     image        varchar(255) null,
-    status       varchar(30)  null
+    status       varchar(30)  null,
+    is_archived varchar(30) not null default 0
+
 );
 

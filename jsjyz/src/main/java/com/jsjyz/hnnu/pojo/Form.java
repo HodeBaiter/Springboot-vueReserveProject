@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 public class Form {
     private String name;
@@ -17,4 +19,5 @@ public class Form {
     private String college;
     private String reserveTime;
     private String image;
+    private Integer isArchived;
 }
