@@ -8,8 +8,8 @@ spring:
     url: jdbc:mysql://localhost:3306/jsjyz?unicode=true&characterSet=utf-8&TimeZone=UTC
   sql:
     init:
-      schema-locations: classpath*:sql/form.sql
-      data-locations: classpath*:sql/data/formdata.sql
+      schema-locations: classpath*:sql/*.sql
+      data-locations: classpath*:sql/data/*.sql
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

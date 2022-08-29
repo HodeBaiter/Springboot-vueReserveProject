@@ -1,23 +1,21 @@
 package com.jsjyz.hnnu.controller;
 
 import com.jsjyz.hnnu.service.ArchivesService;
-import com.jsjyz.hnnu.vo.ArchivesVo;
-import com.jsjyz.hnnu.vo.Pagination;
+import com.jsjyz.hnnu.vo.ArchivesListVo;
+import com.jsjyz.hnnu.vo.paginationVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ArchivesController {
     @Autowired
     private ArchivesService archivesService;
     @PostMapping("/archives")
-    public List<ArchivesVo> getArchives()  {
-        return archivesService.getArchives();
+    public Map<String, List<ArchivesListVo>> getArchives(@RequestBody paginationVo pagination)  {
+        return archivesService.getArchives(pagination);
     }
+
 }

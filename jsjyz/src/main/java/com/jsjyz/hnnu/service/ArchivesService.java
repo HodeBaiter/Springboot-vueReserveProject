@@ -1,10 +1,11 @@
 package com.jsjyz.hnnu.service;
 
-import com.jsjyz.hnnu.vo.ArchivesVo;
+import com.jsjyz.hnnu.vo.ArchivesListVo;
+import com.jsjyz.hnnu.vo.paginationVo;
 
-import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public interface ArchivesService {
-    List<ArchivesVo> getArchives();
+    Map<String, List<ArchivesListVo>> getArchives(paginationVo pagination);
 }

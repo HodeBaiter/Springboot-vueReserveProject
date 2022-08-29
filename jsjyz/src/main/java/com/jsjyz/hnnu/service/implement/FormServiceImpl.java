@@ -8,6 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+
 
 @Service
 public class FormServiceImpl implements FormService {
@@ -17,7 +19,7 @@ public class FormServiceImpl implements FormService {
     public ResultResponse saveForm(FormVo formVo){
         Form form = copy(formVo);
         form.setStatus("undone");
-        form.setCreateTime(System.currentTimeMillis());
+        form.setCreateTime(new Timestamp(System.currentTimeMillis()));
         formMapper.insert(form);
         return new ResultResponse(200,"success");
     }

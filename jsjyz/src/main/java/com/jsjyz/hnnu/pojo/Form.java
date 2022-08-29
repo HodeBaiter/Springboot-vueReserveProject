@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 public class Form {
@@ -14,10 +15,11 @@ public class Form {
     private String title;
     private String question;
     private String status;
-    private Long createTime;
+    private Timestamp createTime;
     private String answer;
     private String college;
     private String reserveTime;
     private String image;
     private Integer isArchived;
+    private List<String> keyWords;
 }

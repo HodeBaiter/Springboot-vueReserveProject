@@ -4,10 +4,6 @@ import lombok.Data;
 
 @Data
 public class ArchivesVo {
-    private Long id;
-    private String createTime;
-    private String title;
-    private String status;
-    private String question;
-    private String isArchived;
+    private String dateString;
+    private ArchivesListVo archivesListVo;
 }
