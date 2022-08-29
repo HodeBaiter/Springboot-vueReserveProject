@@ -21,5 +21,5 @@ public class Form {
     private String reserveTime;
     private String image;
     private Integer isArchived;
-    private List<String> keyWords;
+
 }
