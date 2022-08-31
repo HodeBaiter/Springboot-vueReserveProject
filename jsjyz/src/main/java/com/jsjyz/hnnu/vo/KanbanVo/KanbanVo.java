@@ -1,4 +1,4 @@
-package com.jsjyz.hnnu.vo;
+package com.jsjyz.hnnu.vo.KanbanVo;
 
 import lombok.Data;
 
@@ -9,5 +9,4 @@ public class KanbanVo {
     private String question;
     private String time;
     private String status;
-
 }

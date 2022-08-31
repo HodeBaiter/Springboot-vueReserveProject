@@ -1,4 +1,4 @@
-package com.jsjyz.hnnu.vo;
+package com.jsjyz.hnnu.vo.ArchivesVo;
 
 import lombok.Data;
 

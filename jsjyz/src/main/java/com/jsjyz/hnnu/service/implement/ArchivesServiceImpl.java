@@ -8,7 +8,8 @@ import com.jsjyz.hnnu.mapper.KeyWordsMapper;
 import com.jsjyz.hnnu.pojo.Form;
 import com.jsjyz.hnnu.pojo.KeyWords;
 import com.jsjyz.hnnu.service.ArchivesService;
-import com.jsjyz.hnnu.vo.ArchivesListVo;
+import com.jsjyz.hnnu.vo.ArchivesVo.ArchivesListVo;
+import com.jsjyz.hnnu.vo.ArchivesVo.ArchivesVo;
 import com.jsjyz.hnnu.vo.PaginationVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ArchivesServiceImpl implements ArchivesService {
     @Autowired
     private ArchivesMapper archivesMapper;
     @Override
-    public Map<String, List<ArchivesListVo>> getArchives(PaginationVo pagination) {
+    public List<ArchivesVo> getArchives(PaginationVo pagination) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         formLambdaQueryWrapper.eq(Form::getIsArchived,true);
         formLambdaQueryWrapper.orderByDesc(Form::getCreateTime);
@@ -47,11 +48,19 @@ public class ArchivesServiceImpl implements ArchivesService {
         Map<String, List<ArchivesListVo>> postsPerType = archivesListVos.stream()
                 .collect(Collectors.groupingBy(item -> {
                     LocalDateTime localDateTime = item.getCreateTime().toLocalDateTime();
-                    String dateString = String.valueOf(localDateTime.getYear()) + "-" + String.valueOf(localDateTime.getMonthValue());
+                    String dateString = String.valueOf(localDateTime.getYear()) +"-"+ String.valueOf(localDateTime.getMonthValue());
 
                     return dateString;
                 }));
-        return  postsPerType;
+        List<ArchivesVo> archivesVos = new ArrayList<>();
+        postsPerType.forEach( (key,value) -> {
+            ArchivesVo archivesVo = new ArchivesVo();
+            archivesVo.setDateString(key);
+            archivesVo.setArchivesListVo(value);
+            archivesVos.add(archivesVo);
+        });
+
+        return  archivesVos;
     }
 
     @Override
@@ -70,6 +79,7 @@ public class ArchivesServiceImpl implements ArchivesService {
         List<Form> forms = new ArrayList<>();
         if (!keyWordsInteger.isEmpty()) {
             LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            formLambdaQueryWrapper.eq(Form::getIsArchived,1);
             formLambdaQueryWrapper.in(Form::getId,keyWordsInteger);
             Page<Form> keyWordsPage = new Page<>(paginationVo.getPageNum(), paginationVo.getPageSize());
             IPage<Form> page = archivesMapper.selectPage(keyWordsPage, formLambdaQueryWrapper);
@@ -86,5 +96,13 @@ public class ArchivesServiceImpl implements ArchivesService {
         }
         ;
         return archivesListVos;
+    }
+
+    @Override
+    public Long getTotalPages() {
+        LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        formLambdaQueryWrapper.eq(Form::getIsArchived,1);
+        Long aLong = archivesMapper.selectCount(formLambdaQueryWrapper);
+        return aLong;
     }
 }

@@ -1,44 +1,71 @@
 package com.jsjyz.hnnu.service.implement;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsjyz.hnnu.mapper.KanbanMapper;
 import com.jsjyz.hnnu.pojo.Form;
 import com.jsjyz.hnnu.service.KanbanService;
-import com.jsjyz.hnnu.vo.KanbanVo;
+import com.jsjyz.hnnu.vo.KanbanVo.KanbanGroupVo;
+import com.jsjyz.hnnu.vo.KanbanVo.KanbanVo;
+import com.jsjyz.hnnu.vo.PaginationVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class KanbanServiceImpl implements KanbanService {
     @Autowired
     private KanbanMapper kanbanMapper;
     @Override
-    public List<KanbanVo> getKanban() {
+    public ArrayList<KanbanGroupVo> getKanban() {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<Form> formList = kanbanMapper.selectList(formLambdaQueryWrapper);
         ArrayList<KanbanVo> kanbanVos = new ArrayList<KanbanVo>();
+        //group
+        ArrayList<KanbanGroupVo> kanbanGroupVos = new ArrayList<>();
+        if (formList.isEmpty()){
+            return  kanbanGroupVos;
+        }
         for (Form form:
-             formList) {
+                formList) {
             KanbanVo kanbanVo = new KanbanVo();
             BeanUtils.copyProperties(form,kanbanVo);
             kanbanVos.add(kanbanVo);
         }
-        return kanbanVos;
+        Map<String,List<KanbanVo>> groupMaps = kanbanVos.stream().collect(Collectors.groupingBy(item ->{
+            String status = item.getStatus();
+            return status;
+        }));
+        groupMaps.forEach((key,value) ->{
+            KanbanGroupVo kanbanGroupVo = new KanbanGroupVo();
+            kanbanGroupVo.setStatus(key);
+            kanbanGroupVo.setKanbanVoList(value);
+            kanbanGroupVos.add(kanbanGroupVo);
+        });
+        return kanbanGroupVos;
     }
     @Override
-    public KanbanVo getKanbanByName(String name) {
+    public List<KanbanVo> getKanbanByName(String name, PaginationVo paginationVo) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         formLambdaQueryWrapper.like(Form::getName,name);
-        Form form = kanbanMapper.selectOne(formLambdaQueryWrapper);
-        KanbanVo kanbanVo = new KanbanVo();
-        if(form == null){
-            return kanbanVo;
+        Page<Form> formPage = new Page<>(paginationVo.getPageNum(), paginationVo.getPageSize());
+        IPage<Form> records = kanbanMapper.selectPage(formPage, formLambdaQueryWrapper);
+        List<Form> forms = records.getRecords();
+        List<KanbanVo> kanbanVos = new ArrayList<KanbanVo>();
+        if(forms.isEmpty()) {
+            return kanbanVos;
         }
-            BeanUtils.copyProperties(form, kanbanVo);
-        return kanbanVo;
+        forms.forEach(form ->{
+            KanbanVo kanbanVo = new KanbanVo();
+            BeanUtils.copyProperties(form,kanbanVo);
+            kanbanVos.add(kanbanVo);
+        });
+        return kanbanVos;
     }
 }
