@@ -1,0 +1,10 @@
+-- auto-generated definition
+DROP TABLE IF EXISTS `user`;
+create table user
+(
+    user_id bigint(20) primary key ,
+    user_name varchar(20) null ,
+    permissions varchar(20) default 'user'  not null,
+    password varchar(50) not null
+)
+    comment '联系表';

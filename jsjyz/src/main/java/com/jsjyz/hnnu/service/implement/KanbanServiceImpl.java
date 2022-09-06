@@ -29,6 +29,11 @@ public class KanbanServiceImpl implements KanbanService {
         ArrayList<KanbanVo> kanbanVos = new ArrayList<KanbanVo>();
         //group
         ArrayList<KanbanGroupVo> kanbanGroupVos = new ArrayList<>();
+
+        kanbanGroupVos.add(new KanbanGroupVo("undone" ));
+        kanbanGroupVos.add(new KanbanGroupVo("cancel" ));
+        kanbanGroupVos.add(new KanbanGroupVo("expired" ));
+        kanbanGroupVos.add(new KanbanGroupVo("done"));
         if (formList.isEmpty()){
             return  kanbanGroupVos;
         }
@@ -42,11 +47,15 @@ public class KanbanServiceImpl implements KanbanService {
             String status = item.getStatus();
             return status;
         }));
-        groupMaps.forEach((key,value) ->{
-            KanbanGroupVo kanbanGroupVo = new KanbanGroupVo();
-            kanbanGroupVo.setStatus(key);
-            kanbanGroupVo.setKanbanVoList(value);
-            kanbanGroupVos.add(kanbanGroupVo);
+    groupMaps.forEach(
+        (key, value) -> {
+          kanbanGroupVos.forEach(
+              kanbanGroupVo -> {
+                if (key.equals(kanbanGroupVo.getStatus()) ) {
+
+                  kanbanGroupVo.setKanbanVoList(value);
+                }
+              });
         });
         return kanbanGroupVos;
     }

@@ -25,31 +25,35 @@ public class ArchivesServiceImpl implements ArchivesService {
     private KeyWordsMapper keyWordsMapper;
     @Autowired
     private ArchivesMapper archivesMapper;
+
+
     @Override
-    public List<ArchivesVo> getArchives(PaginationVo pagination) {
+    public List<ArchivesVo> getArchives(PaginationVo pagination, String tag) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         formLambdaQueryWrapper.eq(Form::getIsArchived,true);
         formLambdaQueryWrapper.orderByDesc(Form::getCreateTime);
         formLambdaQueryWrapper.eq(Form::getIsArchived,1);
+        if (tag != null){
+            formLambdaQueryWrapper.eq(Form::getTag,tag);
+        }
         Page<Form> formPage = new Page<>(pagination.getPageNum(), pagination.getPageSize());
         IPage<Form> page = archivesMapper.selectPage(formPage, formLambdaQueryWrapper);
         List<Form> records = page.getRecords();
         //data convert
         ArrayList<ArchivesListVo> archivesListVos = new ArrayList<>();
         for (Form form :
-                    records) {
+                records) {
             ArchivesListVo archivesListVo = new ArchivesListVo();
             archivesListVo.setIsArchived(form.getIsArchived().toString());
-                BeanUtils.copyProperties(form, archivesListVo);
+            BeanUtils.copyProperties(form, archivesListVo);
             archivesListVos.add(archivesListVo);
-            }
+        }
         ;
         //group
         Map<String, List<ArchivesListVo>> postsPerType = archivesListVos.stream()
                 .collect(Collectors.groupingBy(item -> {
                     LocalDateTime localDateTime = item.getCreateTime().toLocalDateTime();
                     String dateString = String.valueOf(localDateTime.getYear()) +"-"+ String.valueOf(localDateTime.getMonthValue());
-
                     return dateString;
                 }));
         List<ArchivesVo> archivesVos = new ArrayList<>();
@@ -59,7 +63,6 @@ public class ArchivesServiceImpl implements ArchivesService {
             archivesVo.setArchivesListVo(value);
             archivesVos.add(archivesVo);
         });
-
         return  archivesVos;
     }
 

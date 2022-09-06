@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 public class Form {
@@ -21,5 +20,5 @@ public class Form {
     private String reserveTime;
     private String image;
     private Integer isArchived;
-
+    private String tag;
 }

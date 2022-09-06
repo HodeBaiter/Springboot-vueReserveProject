@@ -15,8 +15,12 @@ public class ArchivesController {
     @Autowired
     private ArchivesService archivesService;
     @PostMapping("/archives")
-    public List<ArchivesVo> getArchives(@RequestBody PaginationVo pagination)  {
-        return archivesService.getArchives(pagination);
+    public List<ArchivesVo> getArchives(@RequestBody Map<String,String> archivesMap)  {
+        PaginationVo paginationVo = new PaginationVo();
+        paginationVo.setPageNum(Long.parseLong(archivesMap.get("pageNum")));
+        paginationVo.setPageSize(Long.parseLong(archivesMap.get("pageSize")));
+        String tag = archivesMap.get("tag");
+        return archivesService.getArchives(paginationVo,tag);
     }
     @PostMapping("/search")
     public List<ArchivesListVo> search(@RequestBody Map<String,String> searchParam) {
