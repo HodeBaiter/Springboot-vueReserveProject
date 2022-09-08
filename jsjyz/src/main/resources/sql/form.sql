@@ -14,7 +14,9 @@ create table form
     image        varchar(255)                          null,
     status       varchar(30)                           null,
     is_archived  varchar(30) default '0'               not null,
-    tag          varchar(30)                           null
+    tag          varchar(20)                          null,
+    deleted int(11)  default 0 not null,
+    phone_number varchar(20)
 );
 
 

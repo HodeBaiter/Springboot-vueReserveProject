@@ -1,8 +1,8 @@
 package com.jsjyz.hnnu.controller;
 
 
+import com.jsjyz.hnnu.pojo.Form;
 import com.jsjyz.hnnu.service.FormService;
-import com.jsjyz.hnnu.vo.FormVo;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class FormController {
@@ -24,8 +25,17 @@ public class FormController {
         return options;
     }
     @PostMapping("/form")
-    public ResultResponse saveForm(@RequestBody FormVo formVo) {
-    return formService.saveForm(formVo);
+    public ResultResponse saveForm(@RequestBody Form form) {
+    return formService.saveForm(form);
+    }
+    //<=======admin===========>
+    @PostMapping("/admin/form/update")
+    public ResultResponse update(@RequestBody Form form){
+        return formService.update(form);
+    }
+    @PostMapping("/admin/form/delete")
+    public ResultResponse delete(@RequestBody List<Form> forms){
+        return formService.delete(forms);
     }
 
 }

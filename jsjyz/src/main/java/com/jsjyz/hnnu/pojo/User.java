@@ -11,4 +11,5 @@ public class User {
     private String userName;
     private String permissions;
     private String password;
+    private Integer deleted;
 }

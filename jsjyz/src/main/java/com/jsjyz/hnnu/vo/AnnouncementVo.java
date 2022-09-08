@@ -7,4 +7,5 @@ public class AnnouncementVo {
     private String id;
     private String markdown;
     private String title;
+    private String updateTime;
 }

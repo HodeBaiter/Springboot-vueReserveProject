@@ -4,7 +4,7 @@ import com.jsjyz.hnnu.pojo.User;
 import com.jsjyz.hnnu.service.LoginService;
 import com.jsjyz.hnnu.service.UserService;
 import com.jsjyz.hnnu.util.JwtUtil;
-import com.jsjyz.hnnu.vo.KanbanVo.ErrorCode;
+import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.LoginParam;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -29,9 +29,9 @@ public class LoginServiceImpl implements LoginService {
         ResultResponse resultResponse = new ResultResponse();
 
         String md5Password = DigestUtils.md5DigestAsHex((password+salt).getBytes());
-        User user = userService.getUserByAccount(userName, md5Password);
+        User user = userService.getPermissionsByAccount(userName, md5Password);
         if (user == null){
-            return new ResultResponse(ErrorCode.ACOUNT_PWD_NOT_FOUND.getCode(),ErrorCode.ACOUNT_PWD_NOT_FOUND.getMessage());
+            return new ResultResponse(ErrorCode.ACCOUNT_PWD_NOT_FOUND.getCode(),ErrorCode.ACCOUNT_PWD_NOT_FOUND.getMessage());
         }
         String token = jwtUtil.create(user.getUserId(),user.getPermissions());
         return new ResultResponse(10000,"访问成功",token);

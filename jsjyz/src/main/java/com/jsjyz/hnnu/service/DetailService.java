@@ -1,7 +1,8 @@
 package com.jsjyz.hnnu.service;
 
-import com.jsjyz.hnnu.vo.DetailVo;
+import com.jsjyz.hnnu.pojo.Form;
+import com.jsjyz.hnnu.vo.ResultResponse;
 
 public interface DetailService {
-    DetailVo getDetail(Long id);
+    ResultResponse getDetail(Form form);
 }

@@ -3,7 +3,7 @@ package com.jsjyz.hnnu.service.implement;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jsjyz.hnnu.mapper.KanbanMapper;
+import com.jsjyz.hnnu.mapper.FormMapper;
 import com.jsjyz.hnnu.pojo.Form;
 import com.jsjyz.hnnu.service.KanbanService;
 import com.jsjyz.hnnu.vo.KanbanVo.KanbanGroupVo;
@@ -21,12 +21,13 @@ import java.util.stream.Collectors;
 @Service
 public class KanbanServiceImpl implements KanbanService {
     @Autowired
-    private KanbanMapper kanbanMapper;
+    private FormMapper formMapper;
     @Override
     public ArrayList<KanbanGroupVo> getKanban() {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<Form> formList = kanbanMapper.selectList(formLambdaQueryWrapper);
-        ArrayList<KanbanVo> kanbanVos = new ArrayList<KanbanVo>();
+        formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        List<Form> formList = formMapper.selectList(formLambdaQueryWrapper);
+        ArrayList<KanbanVo> kanbanVos = new ArrayList<>();
         //group
         ArrayList<KanbanGroupVo> kanbanGroupVos = new ArrayList<>();
 
@@ -48,25 +49,24 @@ public class KanbanServiceImpl implements KanbanService {
             return status;
         }));
     groupMaps.forEach(
-        (key, value) -> {
-          kanbanGroupVos.forEach(
-              kanbanGroupVo -> {
-                if (key.equals(kanbanGroupVo.getStatus()) ) {
+        (key, value) -> kanbanGroupVos.forEach(
+            kanbanGroupVo -> {
+              if (key.equals(kanbanGroupVo.getStatus()) ) {
 
-                  kanbanGroupVo.setKanbanVoList(value);
-                }
-              });
-        });
+                kanbanGroupVo.setKanbanVoList(value);
+              }
+            }));
         return kanbanGroupVos;
     }
     @Override
     public List<KanbanVo> getKanbanByName(String name, PaginationVo paginationVo) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         formLambdaQueryWrapper.like(Form::getName,name);
+        formLambdaQueryWrapper.eq(Form::getDeleted,0);
         Page<Form> formPage = new Page<>(paginationVo.getPageNum(), paginationVo.getPageSize());
-        IPage<Form> records = kanbanMapper.selectPage(formPage, formLambdaQueryWrapper);
+        IPage<Form> records = formMapper.selectPage(formPage, formLambdaQueryWrapper);
         List<Form> forms = records.getRecords();
-        List<KanbanVo> kanbanVos = new ArrayList<KanbanVo>();
+        List<KanbanVo> kanbanVos = new ArrayList<>();
         if(forms.isEmpty()) {
             return kanbanVos;
         }

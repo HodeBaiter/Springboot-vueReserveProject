@@ -7,7 +7,7 @@ import com.jsjyz.hnnu.vo.PaginationVo;
 import java.util.List;
 
 public interface ArchivesService {
-    List<ArchivesVo> getArchives(PaginationVo pagination,String tag);
+    List<ArchivesVo> getArchives(PaginationVo pagination);
 
 
 

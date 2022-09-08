@@ -6,6 +6,8 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/jsjyz?unicode=true&characterSet=utf-8&TimeZone=UTC
+    hikari:
+      max-lifetime: 600000
   sql:
     init:
       schema-locations: classpath*:sql/*.sql

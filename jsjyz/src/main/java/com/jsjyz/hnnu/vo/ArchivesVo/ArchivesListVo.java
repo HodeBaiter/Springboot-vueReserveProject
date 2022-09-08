@@ -11,5 +11,4 @@ public class ArchivesListVo {
     private String title;
     private String status;
     private String question;
-    private String isArchived;
 }

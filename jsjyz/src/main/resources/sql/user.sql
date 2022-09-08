@@ -5,6 +5,7 @@ create table user
     user_id bigint(20) primary key ,
     user_name varchar(20) null ,
     permissions varchar(20) default 'user'  not null,
-    password varchar(50) not null
+    password varchar(50) not null,
+    deleted int(11)  default 0 not null
 )
     comment '联系表';

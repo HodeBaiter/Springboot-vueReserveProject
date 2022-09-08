@@ -2,6 +2,7 @@ package com.jsjyz.hnnu.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -21,4 +22,7 @@ public class Form {
     private String image;
     private Integer isArchived;
     private String tag;
+    private String phoneNumber;
+    @TableLogic
+    private Integer deleted;
 }
