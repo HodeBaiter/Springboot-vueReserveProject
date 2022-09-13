@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public interface UserService {
-    User getPermissionsByAccount(String userName, String password);
+    User getPermissionsByAccount(String userName,String email, String password);
     List<User> getAllUsers(PaginationVo paginationVo);
     ResultResponse insert(User user);
     ResultResponse update(User user);

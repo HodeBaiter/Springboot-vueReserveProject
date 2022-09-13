@@ -20,9 +20,13 @@ public class DetailServiceImpl implements DetailService {
         return new ResultResponse(11000,"failed");
     }
         DetailVo detailVo = new DetailVo();
-        String[] s = formDetail.getImage().split(" ");
-        detailVo.setImage(s);
+        if (formDetail.getImage() != null) {
+            String[] s = formDetail.getImage().split(" ");
+            detailVo.setImage(s);
+        }
+
+
         BeanUtils.copyProperties(form,detailVo);
-        return new ResultResponse(10000,"success");
+        return new ResultResponse(10000,"success",detailVo);
     }
 }

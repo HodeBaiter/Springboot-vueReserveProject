@@ -24,6 +24,10 @@ public class UserController {
     public ResultResponse login(@RequestBody LoginParam loginParam){
         return loginService.login(loginParam);
     }
+    @PostMapping("/register")
+    public  ResultResponse register(@RequestBody LoginParam loginParam){
+        return loginService.register(loginParam);
+    }
     //<=======user========>
     @PostMapping("/user/info")
     public ResultResponse getInfo(@RequestHeader("Authorization") User user){
@@ -38,7 +42,8 @@ public class UserController {
     }
     @PostMapping("/admin/user/update")
     public ResultResponse update(@RequestBody User user){
-       return userService.update(user);
+
+        return userService.update(user);
     }
     @PostMapping("/admin/user/delete")
     public ResultResponse delete(@RequestBody List<User> users){

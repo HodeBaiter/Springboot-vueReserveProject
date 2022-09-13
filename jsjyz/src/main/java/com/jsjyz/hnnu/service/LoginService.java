@@ -6,4 +6,6 @@ import com.jsjyz.hnnu.vo.ResultResponse;
 
 public interface LoginService {
     ResultResponse login(LoginParam loginParam);
+
+    ResultResponse register(LoginParam loginParam);
 }

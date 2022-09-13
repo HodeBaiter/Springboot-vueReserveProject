@@ -9,6 +9,7 @@ public class User {
     @TableId(value = "user_id",type = IdType.AUTO)
     private Long userId;
     private String userName;
+    private String email;
     private String permissions;
     private String password;
     private Integer deleted;

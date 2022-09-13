@@ -35,21 +35,21 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
-        Map<String, String> parseToken = jwtUtil.parse(token);
+        Map<String, Object> parseToken = jwtUtil.parse(token);
         if (parseToken == null){
             ResultResponse result = new ResultResponse(ErrorCode.NO_LOGIN);
             response.setContentType("application/json;charset = utf-8");
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
-        if (Long.parseLong(parseToken.get("permissions"))==0L){
+        if (String.valueOf(parseToken.get("permissions")).equals("0")){
             ResultResponse result = new ResultResponse(ErrorCode.NO_PERMISSIONS);
             response.setContentType("application/json;charset = utf-8");
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
         User user = new User();
-        user.setUserId( Long.parseLong(parseToken.get("userId")));
+        user.setUserId( Long.parseLong(String.valueOf(parseToken.get("userId"))));
         UserThreadLocal.put(user);
         return true;
     }

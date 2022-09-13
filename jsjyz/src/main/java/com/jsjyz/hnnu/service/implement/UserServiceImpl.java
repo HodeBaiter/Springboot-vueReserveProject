@@ -20,11 +20,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     @Autowired
     private UserMapper userMapper;
     @Override
-    public User getPermissionsByAccount(String userName, String password) {
+    public User getPermissionsByAccount(String userName,String email, String password) {
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (userName != null) {
+            userLambdaQueryWrapper.eq(User::getUserName,userName);
+        }
+        if (email != null) {
+            userLambdaQueryWrapper.eq(User::getEmail,email);
+        }
         userLambdaQueryWrapper.select(User::getUserId,User::getPermissions);
         userLambdaQueryWrapper.eq(User::getDeleted,0);
-        userLambdaQueryWrapper.eq(User::getUserName,userName);
         userLambdaQueryWrapper.eq(User::getPassword,password);
         User user = userMapper.selectOne(userLambdaQueryWrapper);
         return user;
@@ -41,6 +46,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
     @Override
     public ResultResponse insert(User user){
+        user.setPermissions("1");
+        user.setDeleted(1);
         int insert = userMapper.insert(user);
         if (insert == 0){
             return new ResultResponse(11000,"failed");

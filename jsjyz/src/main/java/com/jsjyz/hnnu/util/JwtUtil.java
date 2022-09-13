@@ -34,10 +34,10 @@ public class JwtUtil {
             return token;
     }
 
-    public Map<String,String> parse(String token){
+    public Map<String,Object> parse(String token){
         try {
             Jwt parse = Jwts.parser().setSigningKey(slat).parse(token);
-            return (Map<String, String>) parse.getBody();
+            return (Map<String, Object>) parse.getBody();
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             e.printStackTrace();
         }
