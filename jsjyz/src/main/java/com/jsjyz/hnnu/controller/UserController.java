@@ -5,12 +5,10 @@ import com.jsjyz.hnnu.service.LoginService;
 import com.jsjyz.hnnu.service.UserService;
 import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.LoginParam;
+import com.jsjyz.hnnu.vo.PaginationVo;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,13 +39,15 @@ public class UserController {
 
     }
     @PostMapping("/admin/user/update")
-    public ResultResponse update(@RequestBody User user){
-
-        return userService.update(user);
+    public ResultResponse update(@RequestBody List<User> users){
+        return userService.update(users);
     }
     @PostMapping("/admin/user/delete")
     public ResultResponse delete(@RequestBody List<User> users){
         return userService.deleted(users);
     }
-
+    @GetMapping ("/admin/user/getUser")
+    public ResultResponse getUser() {
+        return new ResultResponse(ErrorCode.SUCCESS,userService.getAllUsers()) ;
+    }
 }

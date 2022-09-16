@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface UserService {
     User getPermissionsByAccount(String userName,String email, String password);
-    List<User> getAllUsers(PaginationVo paginationVo);
+    List<User> getAllUsers();
     ResultResponse insert(User user);
-    ResultResponse update(User user);
+    ResultResponse update(List<User> users);
     ResultResponse deleted(List<User> users);
     User userInfo(User user);
 }

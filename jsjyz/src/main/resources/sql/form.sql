@@ -8,7 +8,7 @@ create table form
     title        varchar(30)                           null,
     question     varchar(255)                          null,
     create_time  timestamp   default CURRENT_TIMESTAMP not null,
-    answer       varchar(255)                          null,
+    answer       varchar(2000)                          null,
     college      varchar(30)                           null,
     reserve_time bigint                                null,
     image        varchar(255)                          null,

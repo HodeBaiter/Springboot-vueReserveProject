@@ -58,6 +58,7 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
     public ResultResponse update(Form form) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
         formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        formLambdaQueryWrapper.eq(Form::getId,form.getId());
         int update = formMapper.update(form, formLambdaQueryWrapper);
         if (update == 0){
             return  new ResultResponse(ErrorCode.FAILED);
@@ -78,5 +79,13 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
         }
         return new ResultResponse(ErrorCode.SUCCESS);
     }
+
+    @Override
+    public List<Form> getAllForms() {
+        LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        List<Form> forms = formMapper.selectList(formLambdaQueryWrapper);
+        return forms;
     }
+}
 

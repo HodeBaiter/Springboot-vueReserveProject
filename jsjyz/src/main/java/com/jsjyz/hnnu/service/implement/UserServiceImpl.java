@@ -1,19 +1,17 @@
 package com.jsjyz.hnnu.service.implement;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsjyz.hnnu.mapper.UserMapper;
 import com.jsjyz.hnnu.pojo.User;
 import com.jsjyz.hnnu.service.UserService;
 import com.jsjyz.hnnu.vo.ErrorCode;
-import com.jsjyz.hnnu.vo.PaginationVo;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
@@ -35,14 +33,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         return user;
     }
     @Override
-    public List<User> getAllUsers(PaginationVo paginationVo) {
+    public List<User> getAllUsers() {
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.select(User::getUserId,User::getUserName,User::getPermissions);
         userLambdaQueryWrapper.eq(User::getDeleted,0);
-        Page<User> userPage = new Page<>(paginationVo.getPageNum(), paginationVo.getPageSize());
-        IPage<User> users = userMapper.selectPage(userPage,userLambdaQueryWrapper);
-        List<User> records = users.getRecords();
-        return records;
+        userLambdaQueryWrapper.select(User::getUserId,User::getUserName,User::getPermissions,User::getDeleted,User::getEmail);
+        List<User> users = userMapper.selectList(userLambdaQueryWrapper);
+        return users;
     }
     @Override
     public ResultResponse insert(User user){
@@ -56,16 +52,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
     @Override
-    public ResultResponse update(User user) {
-        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.eq(User::getDeleted,0);
-        int i = userMapper.update(user,userLambdaQueryWrapper);
-        if (i == 0){
-            return  new ResultResponse(ErrorCode.FAILED);
+    public ResultResponse update(List<User> users) {
+
+        for (User user : users) {
+            int i = updateItem(user);
+            if (i == 0){
+                return new ResultResponse(11000,"failed",user);
+            }
         }
         return new ResultResponse(ErrorCode.SUCCESS);
     }
-
+    public int updateItem(User user){
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getDeleted,0);
+        userLambdaQueryWrapper.eq(User::getUserId,user.getUserId());
+        int i = userMapper.update(user,userLambdaQueryWrapper);
+        return i;
+    }
     @Override
     public ResultResponse deleted(List<User> users) {
         users.forEach(user -> user.setDeleted(1));

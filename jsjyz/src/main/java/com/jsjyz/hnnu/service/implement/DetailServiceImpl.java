@@ -26,7 +26,17 @@ public class DetailServiceImpl implements DetailService {
         }
 
 
-        BeanUtils.copyProperties(form,detailVo);
+        BeanUtils.copyProperties(formDetail,detailVo);
         return new ResultResponse(10000,"success",detailVo);
+    }
+
+    @Override
+    public ResultResponse updateDetail(DetailVo detailVo) {
+        Form form = new Form();
+        form.setImage(detailVo.getImage().toString());
+        BeanUtils.copyProperties(detailVo, form);
+        ResultResponse update = formService.update(form);
+        return update;
+
     }
 }

@@ -3,8 +3,10 @@ package com.jsjyz.hnnu.controller;
 
 import com.jsjyz.hnnu.pojo.Form;
 import com.jsjyz.hnnu.service.FormService;
+import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,10 @@ public class FormController {
     @PostMapping("/admin/form/update")
     public ResultResponse update(@RequestBody Form form){
         return formService.update(form);
+    }
+    @GetMapping("/admin/form/getAllForms")
+    public ResultResponse getAllForms(){
+        return new ResultResponse(ErrorCode.SUCCESS,formService.getAllForms());
     }
     @PostMapping("/admin/form/delete")
     public ResultResponse delete(@RequestBody List<Form> forms){

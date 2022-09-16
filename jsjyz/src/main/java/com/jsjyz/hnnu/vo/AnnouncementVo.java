@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AnnouncementVo {
-    private String id;
+    private Long id;
     private String markdown;
     private String title;
     private String updateTime;

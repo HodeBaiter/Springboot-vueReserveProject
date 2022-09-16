@@ -1,5 +1,6 @@
 package com.jsjyz.hnnu.controller;
 
+import com.jsjyz.hnnu.pojo.Announcement;
 import com.jsjyz.hnnu.service.AnnouncementService;
 import com.jsjyz.hnnu.vo.AnnouncementVo;
 import com.jsjyz.hnnu.vo.ErrorCode;
@@ -26,5 +27,8 @@ public class AnnouncementController {
     public ResultResponse allAnnouncements(){
         List<AnnouncementVo> allAnnouncement = announcementService.getAllAnnouncement();
         return new ResultResponse(ErrorCode.SUCCESS,allAnnouncement);
+    }
+    public ResultResponse updateAnnouncement(AnnouncementVo announcement){
+        return new ResultResponse(ErrorCode.SUCCESS,announcementService.updateAnnouncement(announcement));
     }
 }
