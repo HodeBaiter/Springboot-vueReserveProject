@@ -14,4 +14,5 @@ public interface UserService {
     ResultResponse update(List<User> users);
     ResultResponse deleted(List<User> users);
     User userInfo(User user);
+    User getUserByName(User user);
 }

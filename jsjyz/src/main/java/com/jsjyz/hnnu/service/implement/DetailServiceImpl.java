@@ -33,8 +33,12 @@ public class DetailServiceImpl implements DetailService {
     @Override
     public ResultResponse updateDetail(DetailVo detailVo) {
         Form form = new Form();
-        form.setImage(detailVo.getImage().toString());
+        form.setId(detailVo.getId());
+
+        Form formSelect = formService.selectById(form);
         BeanUtils.copyProperties(detailVo, form);
+        formSelect.setImage(detailVo.getImage().toString());
+        formSelect.setDeleted(1);
         ResultResponse update = formService.update(form);
         return update;
 

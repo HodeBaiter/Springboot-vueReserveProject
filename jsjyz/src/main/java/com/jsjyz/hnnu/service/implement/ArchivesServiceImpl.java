@@ -11,13 +11,12 @@ import com.jsjyz.hnnu.service.ArchivesService;
 import com.jsjyz.hnnu.vo.ArchivesVo.ArchivesListVo;
 import com.jsjyz.hnnu.vo.ArchivesVo.ArchivesVo;
 import com.jsjyz.hnnu.vo.PaginationVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,14 +26,23 @@ public class ArchivesServiceImpl implements ArchivesService {
     @Autowired
     private FormMapper formMapper;
     @Override
-    public List<ArchivesVo> getArchives(PaginationVo pagination) {
+    public Map<String, Object> getArchives(PaginationVo pagination, String question, String tag) {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        formLambdaQueryWrapper.select(Form::getId,Form::getTitle,Form::getStatus,Form::getQuestion,Form::getCreateTime);
+
         formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        if (!StringUtils.isBlank(question))    {
+            formLambdaQueryWrapper.like(Form::getTitle,question);
+        }
+        if (!StringUtils.isBlank(tag))    {
+            formLambdaQueryWrapper.eq(Form::getTag,tag);
+        }
         formLambdaQueryWrapper.eq(Form::getIsArchived,1);
+        Long pageCount = formMapper.selectCount(formLambdaQueryWrapper);
         formLambdaQueryWrapper.orderByDesc(Form::getCreateTime);
         Page<Form> formPage = new Page<>(pagination.getPageNum(), pagination.getPageSize());
+        formLambdaQueryWrapper.select(Form::getId,Form::getTitle,Form::getStatus,Form::getQuestion,Form::getCreateTime,Form::getTag);
         IPage<Form> page = formMapper.selectPage(formPage, formLambdaQueryWrapper);
+
         List<Form> records = page.getRecords();
         //data convert
         ArrayList<ArchivesListVo> archivesListVos = new ArrayList<>();
@@ -45,8 +53,8 @@ public class ArchivesServiceImpl implements ArchivesService {
             BeanUtils.copyProperties(form, archivesListVo);
             archivesListVos.add(archivesListVo);
         }
-        if (archivesListVos == null||archivesListVos.isEmpty()){
-            return archivesVos;
+        if (archivesListVos.isEmpty()){
+            return new HashMap<>();
         }
     // group
     Map<String, List<ArchivesListVo>> postsPerType =
@@ -70,7 +78,10 @@ public class ArchivesServiceImpl implements ArchivesService {
             archivesVo.setArchivesListVo(value);
             archivesVos.add(archivesVo);
         });
-        return  archivesVos;
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        stringObjectMap.put("archives", archivesVos);
+        stringObjectMap.put("pageCount",pageCount);
+        return  stringObjectMap;
     }
 
     @Override
@@ -112,5 +123,36 @@ public class ArchivesServiceImpl implements ArchivesService {
         formLambdaQueryWrapper.eq(Form::getIsArchived,1);
         Long aLong = formMapper.selectCount(formLambdaQueryWrapper);
         return aLong;
+    }
+
+    @Override
+    public List<String> getTags() {
+        LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        formLambdaQueryWrapper.eq(Form::getIsArchived,1);
+        formLambdaQueryWrapper.select(Form::getTag);
+        List<Form> forms = formMapper.selectList(formLambdaQueryWrapper);
+        Set<String> set = new HashSet<>();
+        ArrayList<String> strings = new ArrayList<>();
+        forms.forEach(form -> {
+            set.add(form.getTag());
+        });
+        strings.addAll(set);
+        return strings;
+    }
+
+
+
+    @Override
+    public List<Form> getNewArticles() {
+        LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        formLambdaQueryWrapper.eq(Form::getDeleted,0);
+        formLambdaQueryWrapper.select(Form::getTitle,Form::getId,Form::getCreateTime);
+        formLambdaQueryWrapper.eq(Form::getIsArchived,1);
+        formLambdaQueryWrapper.orderByDesc(Form::getCreateTime);
+        formLambdaQueryWrapper.last("limit 5");
+        List<Form> forms = formMapper.selectList(formLambdaQueryWrapper);
+        return forms;
+
     }
 }

@@ -58,6 +58,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         return new ResultResponse(ErrorCode.FAILED);
     }
 
+    @Override
+    public ResultResponse insertAnnouncement(AnnouncementVo announcementVo) {
+        Announcement announcement = new Announcement();
+        BeanUtils.copyProperties(announcementVo, announcement);
+        announcement.setUpdateTime(new Timestamp(System.currentTimeMillis()).getTime());
+        int insert = announcementMapper.insert(announcement);
+        if (insert != 1) {
+            return new ResultResponse(ErrorCode.FAILED);
+        }
+        return new ResultResponse(ErrorCode.SUCCESS);
+    }
+
     public AnnouncementVo copyAnnouncement(Announcement announcement){
         AnnouncementVo announcementVo = new AnnouncementVo();
         announcementVo.setUpdateTime(new Timestamp(announcement.getUpdateTime()).toString() );

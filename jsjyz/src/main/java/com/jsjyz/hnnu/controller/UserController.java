@@ -3,10 +3,12 @@ package com.jsjyz.hnnu.controller;
 import com.jsjyz.hnnu.pojo.User;
 import com.jsjyz.hnnu.service.LoginService;
 import com.jsjyz.hnnu.service.UserService;
+import com.jsjyz.hnnu.util.UserThreadLocal;
 import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.LoginParam;
 import com.jsjyz.hnnu.vo.PaginationVo;
 import com.jsjyz.hnnu.vo.ResultResponse;
+import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,8 @@ public class UserController {
     private UserService userService;
     @PostMapping("/login")
     public ResultResponse login(@RequestBody LoginParam loginParam){
+
+
         return loginService.login(loginParam);
     }
     @PostMapping("/register")
@@ -28,7 +32,8 @@ public class UserController {
     }
     //<=======user========>
     @PostMapping("/user/info")
-    public ResultResponse getInfo(@RequestHeader("Authorization") User user){
+    public ResultResponse getInfo(){
+        User user = UserThreadLocal.get();
         User userInfo = userService.userInfo(user);
         return new ResultResponse(ErrorCode.SUCCESS,userInfo);
     }

@@ -14,4 +14,6 @@ public class KanbanGroupVo {
     public KanbanGroupVo(String status) {
         this.status = status;
     }
+
+
 }

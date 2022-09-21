@@ -11,6 +11,6 @@ public class FormVo {
     private String college;
     private String time;
     private String question;
-    private String image;
+    private String[] image;
     private String createTime;
 }

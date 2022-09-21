@@ -5,23 +5,35 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsjyz.hnnu.mapper.FormMapper;
 import com.jsjyz.hnnu.pojo.Form;
+import com.jsjyz.hnnu.service.FormService;
 import com.jsjyz.hnnu.service.KanbanService;
+import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.KanbanVo.KanbanGroupVo;
 import com.jsjyz.hnnu.vo.KanbanVo.KanbanVo;
 import com.jsjyz.hnnu.vo.PaginationVo;
+import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class KanbanServiceImpl implements KanbanService {
+    private static final HashMap<String,String> map = new HashMap<String,String>(){{
+        put("未完成", "undone");
+        put("过期", "expired");
+        put("已完成", "done");
+        put("取消", "cancel");
+    }};
     @Autowired
     private FormMapper formMapper;
+    @Autowired
+    private FormService formService;
     @Override
     public ArrayList<KanbanGroupVo> getKanban() {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -31,10 +43,10 @@ public class KanbanServiceImpl implements KanbanService {
         //group
         ArrayList<KanbanGroupVo> kanbanGroupVos = new ArrayList<>();
 
-        kanbanGroupVos.add(new KanbanGroupVo("undone" ));
-        kanbanGroupVos.add(new KanbanGroupVo("cancel" ));
-        kanbanGroupVos.add(new KanbanGroupVo("expired" ));
-        kanbanGroupVos.add(new KanbanGroupVo("done"));
+        kanbanGroupVos.add(new KanbanGroupVo("undone",new ArrayList<KanbanVo>()));
+        kanbanGroupVos.add(new KanbanGroupVo("cancel",new ArrayList<KanbanVo>()));
+        kanbanGroupVos.add(new KanbanGroupVo("expired" ,new ArrayList<KanbanVo>()));
+        kanbanGroupVos.add(new KanbanGroupVo("done",new ArrayList<KanbanVo>()));
         if (formList.isEmpty()){
             return  kanbanGroupVos;
         }
@@ -76,5 +88,31 @@ public class KanbanServiceImpl implements KanbanService {
             kanbanVos.add(kanbanVo);
         });
         return kanbanVos;
+    }
+
+    @Override
+    public ResultResponse updateKanban(List<KanbanGroupVo> kanbanGroupVos) {
+        ArrayList<Form> forms = new ArrayList<>();
+        if (kanbanGroupVos == null || kanbanGroupVos.size() == 0) {
+            return new ResultResponse(ErrorCode.PARAMS_ERROR);
+        }
+        kanbanGroupVos.forEach(kanbanGroupVo ->{
+                kanbanGroupVo.setStatus(map.get(kanbanGroupVo.getStatus()));
+                if (kanbanGroupVo.getKanbanVoList() == null || kanbanGroupVo.getKanbanVoList().size() == 0) {
+                    return;
+                }
+                kanbanGroupVo.getKanbanVoList().forEach(kanbanVo -> {
+                    if (!kanbanVo.getStatus().equals(kanbanGroupVo.getStatus()) ){
+                        Form form = new Form();
+                        kanbanVo.setStatus(kanbanGroupVo.getStatus());
+                        form.setId(kanbanVo.getId());
+                        Form formTemplate = formService.selectById(form);
+                        BeanUtils.copyProperties(kanbanVo,formTemplate);
+                        forms.add(formTemplate);
+                    }
+                });
+            });
+        ResultResponse resultResponse = formService.updateList(forms);
+        return resultResponse;
     }
 }

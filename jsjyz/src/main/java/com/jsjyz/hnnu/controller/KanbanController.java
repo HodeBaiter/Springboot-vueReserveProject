@@ -5,6 +5,7 @@ import com.jsjyz.hnnu.service.KanbanService;
 import com.jsjyz.hnnu.vo.KanbanVo.KanbanGroupVo;
 import com.jsjyz.hnnu.vo.KanbanVo.KanbanVo;
 import com.jsjyz.hnnu.vo.PaginationVo;
+import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,4 +32,9 @@ public class KanbanController {
         paginationVo.setPageSize(Long.valueOf(param.get("pageSize")));
         return kanbanService.getKanbanByName(name,paginationVo);
     }
+    @PostMapping("admin/kanban/update")
+    public ResultResponse update(@RequestBody List<KanbanGroupVo> kanbanGroupVo){
+        return kanbanService.updateKanban(kanbanGroupVo);
+    }
+
 }

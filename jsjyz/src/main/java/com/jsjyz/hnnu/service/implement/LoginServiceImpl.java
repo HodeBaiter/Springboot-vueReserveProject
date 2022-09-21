@@ -28,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
         if ((StringUtils.isBlank(userName)&&StringUtils.isBlank(email))||StringUtils.isBlank(password)){
             return new ResultResponse(ErrorCode.PARAMS_ERROR);
         }
-        ResultResponse resultResponse = new ResultResponse();
+
 
         String md5Password = DigestUtils.md5DigestAsHex((password+salt).getBytes());
         User user = userService.getPermissionsByAccount(userName,email, md5Password);
@@ -46,6 +46,10 @@ public class LoginServiceImpl implements LoginService {
         }
         User user = new User();
         BeanUtils.copyProperties(loginParam,user);
+        User userById = userService.getUserByName(user);
+        if (userById!=null){
+            return new ResultResponse(ErrorCode.ACCOUNT_EXEIT);
+        }
         ResultResponse insert = userService.insert(user);
         return insert;
     }

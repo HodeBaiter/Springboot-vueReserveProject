@@ -23,7 +23,8 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
     @Autowired
     private FormMapper formMapper;
     @Override
-    public ResultResponse saveForm(Form form){
+    public ResultResponse saveForm(FormVo formVo){
+        Form form = copy(formVo);
         form.setStatus("undone");
         form.setCreateTime(new Timestamp(System.currentTimeMillis()));
         formMapper.insert(form);
@@ -31,6 +32,8 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
     }
     public Form copy(FormVo formVo) {
         Form form = new Form();
+        String join = String.join(" ", formVo.getImage());
+        form.setImage(join);
         BeanUtils.copyProperties(formVo,form);
         return form;
     }
@@ -62,7 +65,6 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
         int update = formMapper.update(form, formLambdaQueryWrapper);
         if (update == 0){
             return  new ResultResponse(ErrorCode.FAILED);
-
         }
         return new ResultResponse(ErrorCode.SUCCESS);
     }
@@ -83,9 +85,20 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
     @Override
     public List<Form> getAllForms() {
         LambdaQueryWrapper<Form> formLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        formLambdaQueryWrapper.eq(Form::getDeleted,0);
+
         List<Form> forms = formMapper.selectList(formLambdaQueryWrapper);
         return forms;
+    }
+
+    @Override
+    public ResultResponse updateList(List<Form> forms) {
+        for (Form form : forms) {
+            ResultResponse update = update(form);
+            if (update.getCode() == ErrorCode.FAILED.getCode()){
+                return new ResultResponse(ErrorCode.FAILED,form);
+            }
+        }
+        return new ResultResponse(ErrorCode.SUCCESS);
     }
 }
 

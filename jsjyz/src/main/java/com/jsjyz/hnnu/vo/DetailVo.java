@@ -13,4 +13,5 @@ public class DetailVo {
     private Timestamp createTime;
     private String answer;
     private String[] image;
+    private Integer detected;
 }

@@ -10,7 +10,9 @@ public enum ErrorCode {
     NO_PERMISSIONS(10003,"无权限"),
     SESSION_TIMEOUT(10004,"会话超时"),
     NO_LOGIN(10005,"未登录"),
-    FAILED(11000,"操作失败");
+    FAILED(11000,"操作失败"),
+
+    ACCOUNT_EXEIT(10006,"帐号已存在");
     private int code;
     private String message;
 
