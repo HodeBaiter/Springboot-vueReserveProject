@@ -108,6 +108,7 @@ public class KanbanServiceImpl implements KanbanService {
                         form.setId(kanbanVo.getId());
                         Form formTemplate = formService.selectById(form);
                         BeanUtils.copyProperties(kanbanVo,formTemplate);
+
                         forms.add(formTemplate);
                     }
                 });

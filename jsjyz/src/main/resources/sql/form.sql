@@ -10,7 +10,7 @@ create table form
     create_time  timestamp   default CURRENT_TIMESTAMP not null,
     answer       varchar(2000)                          null,
     college      varchar(30)                           null,
-    reserve_time bigint                                null,
+    reserve_time varchar(30)                                null,
     image        varchar(255)                          null,
     status       varchar(30)                           null,
     is_archived  varchar(30) default '0'               not null,

@@ -15,9 +15,6 @@ public class ContactController {
     private ContactService contactService;
     @PostMapping("/contact")
     public ResultResponse saveContact(@RequestBody ContactVo contactVo){
-        System.out.println(contactVo);
-
-        System.out.println(contactService.saveContact(contactVo));
         return contactService.saveContact(contactVo);
     }
 }

@@ -7,6 +7,8 @@ import com.jsjyz.hnnu.pojo.User;
 import com.jsjyz.hnnu.service.UserService;
 import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.ResultResponse;
+import io.netty.util.internal.ObjectUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,11 +73,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
     @Override
     public ResultResponse deleted(List<User> users) {
-        users.forEach(user -> user.setDeleted(1));
-        boolean b = updateBatchById(users);
-        if (!b){
-            return  new ResultResponse(ErrorCode.FAILED);
-        }
+        User errorUser = new User();
+        users.forEach(user -> {
+            user.setDeleted(1);
+            int i = userMapper.deleteById(user);
+            if (i == 0){
+                BeanUtils.copyProperties(user,errorUser);
+                return;
+            }
+
+        });
         return new ResultResponse(ErrorCode.SUCCESS);
     }
 

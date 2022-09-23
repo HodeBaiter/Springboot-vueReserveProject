@@ -27,7 +27,10 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
         Form form = copy(formVo);
         form.setStatus("undone");
         form.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        formMapper.insert(form);
+        int insert = formMapper.insert(form);
+        if (insert == 0) {
+            return new ResultResponse(ErrorCode.FAILED);
+        }
         return new ResultResponse(ErrorCode.SUCCESS);
     }
     public Form copy(FormVo formVo) {
@@ -74,9 +77,17 @@ public class FormServiceImpl extends ServiceImpl<FormMapper,Form> implements For
         if (forms == null){
             return  new ResultResponse(ErrorCode.PARAMS_ERROR);
         }
-        forms.forEach(form -> form.setDeleted(1));
-        boolean b = updateBatchById(forms);
-        if (!b){
+        Form errorForm = new Form();
+        forms.forEach(form -> {
+            form.setDeleted(1);
+            int i = formMapper.deleteById(form.getId());
+            if (i == 0){
+                BeanUtils.copyProperties(form, errorForm);
+                return;
+            }
+        });
+
+        if (errorForm == null){
             return  new ResultResponse(ErrorCode.FAILED);
         }
         return new ResultResponse(ErrorCode.SUCCESS);

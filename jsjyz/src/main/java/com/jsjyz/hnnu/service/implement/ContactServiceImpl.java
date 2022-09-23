@@ -5,6 +5,7 @@ import com.jsjyz.hnnu.mapper.ContactMapper;
 import com.jsjyz.hnnu.pojo.Contact;
 import com.jsjyz.hnnu.service.ContactService;
 import com.jsjyz.hnnu.vo.ContactVo;
+import com.jsjyz.hnnu.vo.ErrorCode;
 import com.jsjyz.hnnu.vo.ResultResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,6 @@ public class ContactServiceImpl implements ContactService {
             Contact contact = new Contact();
             BeanUtils.copyProperties(contactVo,contact);
             contactMapper.insert(contact);
-            return new ResultResponse(200,"success");
+            return new ResultResponse(ErrorCode.SUCCESS);
     }
 }

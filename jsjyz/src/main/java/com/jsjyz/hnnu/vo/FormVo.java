@@ -9,7 +9,8 @@ public class FormVo {
     private Long id;
     private String name;
     private String college;
-    private String time;
+    private String reserveTime;
+    private String phoneNumber;
     private String question;
     private String[] image;
     private String createTime;

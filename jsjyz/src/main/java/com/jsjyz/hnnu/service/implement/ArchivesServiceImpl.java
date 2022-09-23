@@ -57,8 +57,9 @@ public class ArchivesServiceImpl implements ArchivesService {
             return new HashMap<>();
         }
     // group
-    Map<String, List<ArchivesListVo>> postsPerType =
+   Map<String, List<ArchivesListVo>> postsPerType =
         archivesListVos.stream()
+                .sorted(Comparator.comparing(item ->  item.getCreateTime()))
             .collect(
                 Collectors.groupingBy(
                     item -> {
@@ -70,7 +71,12 @@ public class ArchivesServiceImpl implements ArchivesService {
                               + "-"
                               + localDateTime.getMonthValue();
                       return dateString;
-                    }));
+                    }
+                )
+//                    ,LinkedHashMap::new,
+//                    Collectors.mapping(item -> item.)
+            );
+
 
         postsPerType.forEach( (key,value) -> {
             ArchivesVo archivesVo = new ArchivesVo();
@@ -134,8 +140,15 @@ public class ArchivesServiceImpl implements ArchivesService {
         List<Form> forms = formMapper.selectList(formLambdaQueryWrapper);
         Set<String> set = new HashSet<>();
         ArrayList<String> strings = new ArrayList<>();
+        if (forms == null) {
+            return null;
+        }
         forms.forEach(form -> {
-            set.add(form.getTag());
+            if (form == null) {
+                return;
+            }
+            String tag = form.getTag();
+            set.add(tag);
         });
         strings.addAll(set);
         return strings;
